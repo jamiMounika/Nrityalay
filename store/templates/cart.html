@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block title %}Your Cart — Nrityalay{% endblock %}
+
+{% block content %}
+<style>
+    .cart-wrap {
+        width: 88%;
+        max-width: 800px;
+        margin: 40px auto;
+    }
+    .cart-wrap h1 { color: var(--maroon); text-align: center; }
+    .item {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .item img {
+        width: 90px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    .item-info { flex-grow: 1; }
+    .item-info h3 { margin: 0 0 4px; color: var(--maroon); }
+    .item-info .price { color: #2e7d32; font-weight: bold; }
+    .qty-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .qty-controls button {
+        width: 30px;
+        height: 30px;
+        border: none;
+        border-radius: 50%;
+        background: var(--maroon);
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .qty-controls button:hover { background: #5a141e; }
+    .remove-btn {
+        background: none;
+        border: 1px solid #c62828;
+        color: #c62828;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+    }
+    .remove-btn:hover { background: #ffebee; }
+    .summary {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: right;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-top: 20px;
+    }
+    .summary .total { font-size: 24px; font-weight: bold; color: var(--maroon); }
+    .checkout-btn {
+        background: var(--maroon);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 12px;
+    }
+    .checkout-btn:hover { background: #5a141e; }
+    .empty { text-align: center; padding: 60px 20px; }
+    .empty a {
+        display: inline-block;
+        margin-top: 16px;
+        background: var(--maroon);
+        color: white;
+        padding: 10px 24px;
+        border-radius: 6px;
+        text-decoration: none;
+    }
+</style>
+
+<div class="cart-wrap">
+    <h1>🛒 Your Shopping Cart</h1>
+
+    {% if cart_items %}
+        {% for item in cart_items %}
+        <div class="item">
+            <img src="{{ item.product.image }}" alt="{{ item.product.name }}">
+            <div class="item-info">
+                <h3>{{ item.product.name }}</h3>
+                <p class="price">₹{{ item.product.price }} x {{ item.quantity }} = ₹{{ item.subtotal_value }}</p>
+            </div>
+            <form method="POST" action="{% url 'update_cart' item.id %}" class="qty-controls">
+                {% csrf_token %}
+                <button type="submit" name="action" value="decrease">−</button>
+                <span>{{ item.quantity }}</span>
+                <button type="submit" name="action" value="increase">+</button>
+            </form>
+            <form method="POST" action="{% url 'update_cart' item.id %}">
+                {% csrf_token %}
+                <button type="submit" name="action" value="remove" class="remove-btn">Remove</button>
+            </form>
+        </div>
+        {% endfor %}
+
+        <div class="summary">
+            <p class="total">Total: ₹{{ total }}</p>
+            <form method="POST" action="{% url 'checkout' %}">
+                {% csrf_token %}
+                <button type="submit" class="checkout-btn">Proceed to Checkout</button>
+            </form>
+        </div>
+    {% else %}
+        <div class="empty">
+            <p>Your cart is empty. Discover beautiful classical dance costumes & accessories!</p>
+            <a href="{% url 'home' %}">Continue Shopping</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

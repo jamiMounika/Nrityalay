@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Register — Nrityalay{% endblock %}
+
+{% block content %}
+<style>
+    .auth-box {
+        max-width: 420px;
+        margin: 50px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .auth-box h1 { color: var(--maroon); text-align: center; }
+    .auth-box p.help { font-size: 13px; color: #888; }
+    .auth-box ul.errorlist { color: #c62828; font-size: 13px; padding-left: 18px; }
+    .auth-box input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 6px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 15px;
+    }
+    .auth-box label { font-weight: bold; font-size: 14px; }
+    .auth-box button {
+        width: 100%;
+        padding: 12px;
+        background: var(--maroon);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .auth-box button:hover { background: #5a141e; }
+    .auth-box .switch { text-align: center; margin-top: 14px; font-size: 14px; }
+    .auth-box .switch a { color: var(--maroon); }
+</style>
+
+<div class="auth-box">
+    <h1>Create Account</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Register</button>
+    </form>
+    <p class="switch">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+</div>
+{% endblock %}

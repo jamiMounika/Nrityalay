@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% block title %}Nrityalay — Dance Store{% endblock %}
+
+{% block content %}
+<style>
+    .hero {
+        background: linear-gradient(rgba(122,31,43,0.55), rgba(122,31,43,0.55)),
+                    url('https://images.unsplash.com/photo-1583244532610-2f5d1c5b0bd5?auto=format&fit=crop&w=1600&q=80') center/cover;
+        color: white;
+        text-align: center;
+        padding: 70px 20px;
+    }
+    .hero h1 { font-size: 42px; margin: 0 0 10px; letter-spacing: 1px; }
+    .hero p { font-size: 18px; color: #fce8b8; }
+
+    .filters {
+        text-align: center;
+        padding: 20px;
+    }
+    .filters a {
+        display: inline-block;
+        padding: 8px 18px;
+        margin: 4px;
+        border-radius: 20px;
+        background: white;
+        border: 2px solid var(--maroon);
+        color: var(--maroon);
+        text-decoration: none;
+        font-size: 14px;
+        transition: 0.2s;
+    }
+    .filters a.active, .filters a:hover {
+        background: var(--maroon);
+        color: white;
+    }
+
+    .container {
+        width: 92%;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 25px;
+        padding: 10px 0 40px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: transform 0.25s, box-shadow 0.25s;
+        display: flex;
+        flex-direction: column;
+    }
+    .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+    }
+    .card img {
+        width: 100%;
+        height: 230px;
+        object-fit: cover;
+    }
+    .card-body {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+    .card h2 {
+        font-size: 19px;
+        margin: 0 0 6px;
+        color: var(--maroon);
+    }
+    .category-tag {
+        display: inline-block;
+        background: var(--gold);
+        color: var(--ink);
+        font-size: 12px;
+        padding: 3px 10px;
+        border-radius: 12px;
+        margin-bottom: 8px;
+        width: fit-content;
+    }
+    .price {
+        color: #2e7d32;
+        font-size: 20px;
+        font-weight: bold;
+        margin: 8px 0;
+    }
+    .desc {
+        font-size: 14px;
+        color: #555;
+        flex-grow: 1;
+        margin-bottom: 10px;
+    }
+    .stock {
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 10px;
+    }
+    .btn {
+        display: block;
+        text-align: center;
+        background: var(--maroon);
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 15px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .btn:hover { background: #5a141e; }
+</style>
+
+<div class="hero">
+    <h1>Nrityalay Dance Store</h1>
+    <p>Authentic costumes, jewellery & accessories for Bharatanatyam, Kathak, Odissi & more</p>
+</div>
+
+<div class="filters">
+    <a href="{% url 'home' %}" class="{% if not selected_category %}active{% endif %}">All</a>
+    {% for cat in categories %}
+        <a href="?category={{ cat }}" class="{% if selected_category == cat %}active{% endif %}">{{ cat }}</a>
+    {% endfor %}
+</div>
+
+<div class="container">
+{% for product in products %}
+<div class="card">
+    <img src="{{ product.image }}" alt="{{ product.name }}">
+    <div class="card-body">
+        <span class="category-tag">{{ product.category }}</span>
+        <h2>{{ product.name }}</h2>
+        <p class="desc">{{ product.description|truncatewords:15 }}</p>
+        <p class="price">₹{{ product.price }}</p>
+        <p class="stock">{% if product.stock > 0 %}✅ In Stock ({{ product.stock }}){% else %}❌ Out of Stock{% endif %}</p>
+        <a href="{% url 'product_detail' product.id %}" class="btn">View Product</a>
+    </div>
+</div>
+{% empty %}
+<p style="text-align:center; padding: 40px;">No products available yet. Please check back soon!</p>
+{% endfor %}
+</div>
+{% endblock %}
